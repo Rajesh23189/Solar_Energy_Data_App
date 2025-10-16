@@ -13,13 +13,13 @@ app = Flask(__name__)
 
 # Constants
 SOLAR_CONSTANT = 1367  # W/m²
-REGION_FILE = r'csv\india_regions.csv'
-USER_QUERIES_FILE = r'csv\User_Query.csv'
-TOP_REGIONS_FILE = r'csv\TOP_10_REGIONS.csv'
+CSV_DIR = os.path.join(os.path.dirname(__file__), 'csv')
+REGION_FILE = os.path.join(CSV_DIR, 'india_regions.csv')
+USER_QUERIES_FILE = os.path.join(CSV_DIR, 'User_Query.csv')
+TOP_REGIONS_FILE = os.path.join(CSV_DIR, 'TOP_10_REGIONS.csv')
 
-# Ensure directories exist for CSV outputs
-os.makedirs(os.path.dirname(USER_QUERIES_FILE), exist_ok=True)
-os.makedirs(os.path.dirname(TOP_REGIONS_FILE), exist_ok=True)
+# Ensure CSV directory exists
+os.makedirs(CSV_DIR, exist_ok=True)
 
 # Use a session to reuse TCP connections
 session = requests.Session()
