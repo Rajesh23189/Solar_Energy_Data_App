@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌞 Solar Energy Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-b from-cyan-100 to-white p-6 font-sans">
+  <div class="max-w-6xl mx-auto">
+
+    <h1 class="text-3xl font-bold text-center mb-6">🌞 Solar Energy Calculator</h1>
+
+    <form method="POST" class="bg-white p-6 rounded-xl shadow-lg mb-6" id="solarForm">
+      <div class="mb-4">
+        <label class="block font-semibold">Region Name:</label>
+        <input type="text" name="region" id="region" class="border p-2 w-full rounded" placeholder="Enter Region">
+      </div>
+      <div class="mb-4">
+        <label class="block font-semibold">Latitude:</label>
+        <input type="text" name="latitude" id="latitude" class="border p-2 w-full rounded" readonly>
+      </div>
+      <div class="mb-4">
+        <label class="block font-semibold">Longitude:</label>
+        <input type="text" name="longitude" id="longitude" class="border p-2 w-full rounded" readonly>
+      </div>
+      <button type="submit" class="bg-cyan-500 text-white px-4 py-2 rounded hover:bg-cyan-600" id="submitBtn" disabled>Get Solar Data</button>
+      <button type="button" onclick="getLocation()" class="ml-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Use My Location</button>
+    </form>
+
+    {% if result %}
+      <div class="bg-white p-6 rounded-xl shadow-lg mb-6">
+        {% if result.error %}
+          <p class="text-red-600 font-bold">{{ result.error }}</p>
+        {% else %}
+          <h2 class="text-2xl font-bold mb-2">Result for {{ result.region }}</h2>
+          <ul>
+            <li>Date: {{ result.date }}</li>
+            <li>Time: {{ result.time }}</li>
+            <li>Temperature: {{ result.temp }} °C</li>
+            <li>Cloud Cover: {{ result.cloud }} %</li>
+            <li>Solar Intensity: {{ result.intensity }} W/m²</li>
+            <li>Daylight Hours: {{ result.daylight }}</li>
+            <li>Energy Output: {{ result.energy }} MWh</li>
+          </ul>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if top_regions %}
+      <div class="bg-white p-6 rounded-xl shadow-lg mb-6 overflow-x-auto">
+        <h2 class="text-2xl font-bold mb-4">Top 10 Cities by Energy</h2>
+        {{ top_regions | safe }}
+      </div>
+    {% endif %}
+
+    {% for title, graph_html in graphs.items() %}
+      <div class="bg-white p-6 rounded-xl shadow-lg mb-6">
+        <h2 class="text-2xl font-bold mb-4">{{ title }}</h2>
+        {{ graph_html | safe }}
+      </div>
+    {% endfor %}
+
+  </div>
+
+  <script>
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const lat = position.coords.latitude.toFixed(6);
+          const lon = position.coords.longitude.toFixed(6);
+          document.getElementById('latitude').value = lat;
+          document.getElementById('longitude').value = lon;
+          document.getElementById('submitBtn').disabled = false; // enable submit
+        }, (error) => {
+          alert("Unable to get your location. Please allow location access.");
+        });
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+  </script>
+</body>
+</html>
